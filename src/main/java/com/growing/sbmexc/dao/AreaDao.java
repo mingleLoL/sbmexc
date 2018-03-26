@@ -19,5 +19,5 @@ public interface AreaDao {
 
     int insertArea(Area area);
 
-    int deleteArea(Area area);
+    int deleteArea(int areaId);
 }
