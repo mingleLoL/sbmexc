@@ -1,6 +1,7 @@
 package com.growing.sbmexc.service;
 
 import com.growing.sbmexc.entity.Area;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface AreaService {
 
     Area getAreaById(int areaId);
 
-    boolean addArea(Area area);
+    boolean addArea(Area area, BindingResult result);
 
     boolean modifyArea(Area area);
 

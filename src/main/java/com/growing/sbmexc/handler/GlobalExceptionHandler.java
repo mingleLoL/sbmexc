@@ -1,12 +1,16 @@
 package com.growing.sbmexc.handler;
 
+import com.growing.sbmexc.entity.Result;
+import com.growing.sbmexc.enums.ResultEnum;
+import com.growing.sbmexc.exception.MyException;
+import com.growing.sbmexc.utils.ResultUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Author: yinm5
@@ -16,12 +20,18 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    private Map<String, Object> exceptionHandler(HttpServletRequest req, Exception e){
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("success", false);
-        modelMap.put("errMsg", e.getMessage());
-        return modelMap;
+    private Result exceptionHandler(HttpServletRequest req, Exception e){
+        logger.info("Request URL: {}", req.getRequestURL());
+        logger.error("Traces : {}", e.toString());
+        if(e instanceof MyException){
+            return ResultUtil.error(((MyException) e).getCode(), e.getMessage());
+        }else {
+            MyException exception = new MyException(ResultEnum.UNKNOWN_ERROR);
+            return ResultUtil.error(exception.getCode(), exception.getMessage());
+        }
     }
 }

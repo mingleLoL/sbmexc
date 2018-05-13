@@ -2,11 +2,15 @@ package com.growing.sbmexc.service.Impl;
 
 import com.growing.sbmexc.dao.AreaDao;
 import com.growing.sbmexc.entity.Area;
+import com.growing.sbmexc.enums.ResultEnum;
+import com.growing.sbmexc.exception.MyException;
 import com.growing.sbmexc.service.AreaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +39,7 @@ public class AreaServiceImpl implements AreaService {
 
     @Transactional
     @Override
-    public boolean addArea(Area area) {
+    public boolean addArea(@Valid Area area, BindingResult result) {
         if(area.getAreaName() != null && !"".equals(area.getAreaName())){
             area.setCreateTime(new Date());
             area.setLastEditTime(new Date());
@@ -50,7 +54,7 @@ public class AreaServiceImpl implements AreaService {
                 throw new RuntimeException("插入区域信息失败"+e.getMessage());
             }
         }else {
-            throw new RuntimeException("区域信息不能为空");
+            throw new MyException(ResultEnum.EMPTY_AREA);
         }
     }
 

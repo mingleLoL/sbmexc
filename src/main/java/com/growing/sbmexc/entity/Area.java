@@ -1,5 +1,6 @@
 package com.growing.sbmexc.entity;
 
+import javax.validation.constraints.Max;
 import java.util.Date;
 
 /**
@@ -13,6 +14,7 @@ public class Area {
     //名称
     private String areaName;
     //权重，越大展示在越前面
+    @Max(value = 18, message = "权重大能小于18")
     private Integer priority;
     //创建时间
     private Date createTime;
@@ -58,4 +60,16 @@ public class Area {
     public void setLastEditTime(Date lastEditTime) {
         this.lastEditTime = lastEditTime;
     }
+
+    @Override
+    public String toString() {
+        return "Area{" +
+                "areaId=" + areaId +
+                ", areaName='" + areaName + '\'' +
+                ", priority=" + priority +
+                ", createTime=" + createTime +
+                ", lastEditTime=" + lastEditTime +
+                '}';
+    }
+
 }

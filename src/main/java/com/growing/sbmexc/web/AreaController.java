@@ -1,16 +1,16 @@
 package com.growing.sbmexc.web;
 
 import com.growing.sbmexc.entity.Area;
+import com.growing.sbmexc.entity.Result;
+import com.growing.sbmexc.enums.ResultEnum;
 import com.growing.sbmexc.service.AreaService;
+import com.growing.sbmexc.utils.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: yinm5
@@ -25,40 +25,42 @@ public class AreaController {
     private AreaService areaService;
 
     @RequestMapping(value = "/listarea", method = RequestMethod.GET)
-    public Map<String, Object> listArea(){
-        Map<String, Object> modelMap = new HashMap<>();
+    public Result listArea(){
         List<Area> list = areaService.getAreaList();
-        modelMap.put("areaList", list);
-        return modelMap;
+        return ResultUtil.success(list);
     }
 
     @RequestMapping(value = "/getareabyid", method = RequestMethod.GET)
-    public Map<String, Object> getAreaById(Integer areaId){
-        Map<String, Object> modelMap = new HashMap<>();
+    public Result getAreaById(Integer areaId){
         Area area = areaService.getAreaById(areaId);
-        modelMap.put("area", area);
-        return modelMap;
+        return ResultUtil.success(area);
+    }
+
+    @RequestMapping(value = "/getarea{areaId}", method = RequestMethod.GET)
+    public Result getArea(@PathVariable Integer areaId){
+        Area area = areaService.getAreaById(areaId);
+        return ResultUtil.success(area);
     }
 
 
     @RequestMapping(value = "/addarea", method = RequestMethod.POST)
-    public Map<String, Object> addArea(@RequestBody Area area){
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("success", areaService.addArea(area));
-        return modelMap;
+    public Result addArea(@RequestBody @Valid Area area, BindingResult result){
+        if(result.hasErrors()){
+            return ResultUtil.error(ResultEnum.INVALID_PRIORITY.getCode(), ResultEnum.INVALID_PRIORITY.getMsg());
+        }
+        areaService.addArea(area, result);
+        return ResultUtil.success(area);
     }
 
     @RequestMapping(value = "/modifyarea", method = RequestMethod.POST)
-    public Map<String, Object> modifyArea(@RequestBody Area area){
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("success", areaService.modifyArea(area));
-        return modelMap;
+    public Result modifyArea(@RequestBody Area area){
+        areaService.modifyArea(area);
+        return ResultUtil.success(area);
     }
 
     @RequestMapping(value = "/deletearea", method = RequestMethod.GET)
-    public Map<String, Object> deleteArea(Integer areaId){
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("success", areaService.deleteArea(areaId));
-        return modelMap;
+    public Result deleteArea(Integer areaId){
+        areaService.deleteArea(areaId);
+        return ResultUtil.success();
     }
 }
